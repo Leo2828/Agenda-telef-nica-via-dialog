@@ -1,0 +1,73 @@
+#!/bin/bash
+clear
+con=0;
+while [ $con = 0 ];
+do
+op=$(dialog	\
+	--stdout	\
+	--title 'Faça sua escolha'	\
+	--menu ''	\
+	0 0 0	\
+	1 'Cadastrar um novo contato'	\
+	2 'Ver todos os contatos cadastrados'	\
+	3 'Apagar um contato cadastrado'	\
+	4 'Fechar'	)
+clear
+case $op in
+	'1')
+		n=$(dialog	\
+		--stdout	\
+		--inputbox 'insira seu nome'	\
+		0 0	)
+		clear
+		t=$(dialog	\
+		--stdout	\
+		--inputbox 'Insira seu telefone'	\
+		0 0	)
+		clear
+		d=$(dialog	\
+		--stdout	\
+		--title 'Insira a data do seu nascimento'	\
+		--calendar ''	\
+		0 0	\
+		31 12 2000	)
+		clear
+		r=$(dialog	\
+		--stdout	\
+		--title 'Salvar como:'	\
+		--radiolist ''	\
+		0 0 0	\
+		Amigo 'Amigo' on	\
+		Parente 'Parente' off	\
+		Cliente 'Cliente' off	)
+		clear
+		dh=$(date)
+		dialog  \
+                --yesno 'Tem certeza que deseja salvar essas informações?' 0 0 
+		if [ $? = 0 ];
+		then
+		clear
+		echo $n  $t  $d  $r "-" $dh >> info.txt
+		else
+		clear
+		fi
+		;;
+	'2')
+		dialog	\
+		--title 'Contatos cadastrados'	\
+		--textbox ./info.txt	\
+		0 0
+		;;
+	'3')
+		an=$(dialog	\
+		--stdout	\
+		--title 'Informe o novo do contato que deve ser apagado:'	\
+		--inputbox ''	\
+		0 0	)
+		sed -i "/$an/d" info.txt
+		clear
+		;;
+	'4')
+		con=$[$con+1]
+esac
+done
